@@ -1,36 +1,27 @@
-import { galleryItems } from './gallery-items.js';
+// Add imports above this line
+import { galleryItems } from './gallery-items';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-const gallaryContainer = document.querySelector('.gallery');
 
-function onClickGallaryElement(e) {
-  e.preventDefault();
-  const currentImg = e.target.dataset.source;
-  if (!currentImg) {
-    return;
-  }
+const gallery = document.querySelector('.gallery');
+const markup = renderGallery(galleryItems);
 
-  let lightbox = new SimpleLightbox('.gallery a', {
-    scrollZoom: false,
-    captionDelay: 250,
-    captionsData: 'alt',
-    doubleTapZoom: 1,
-  });
-}
+gallery.insertAdjacentHTML('beforeend', markup);
 
-function onCreateImgGallary(gallaryItems) {
-  return gallaryItems
-    .map(({ preview, original, description }) => {
+function renderGallery(images) {
+  return images
+    .map(({ original, preview, description }) => {
       return `
-    <a class="gallery__link" href='${original}'>
-      <img class="gallery__image" src="${preview}" alt="${description}" data-source="${original}">
-    </a>
-    `;
+      <a class="gallery__item" href="${original}">
+        <img class="gallery__image" src="${preview}" alt="${description}" />
+      </a>`;
     })
     .join('');
 }
-gallaryContainer.insertAdjacentHTML(
-  'beforeend',
-  onCreateImgGallary(galleryItems)
-);
-gallaryContainer.addEventListener('click', onClickGallaryElement);
+
+let lightBox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionPosition: 'bottom',
+  captionDelay: 250,
+  scrollZoom: false,
+});
